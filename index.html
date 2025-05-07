@@ -151,7 +151,7 @@
         <canvas id="gameCanvas"></canvas>
         <div class="controls-info">
             <p>J1: 'W' (arriba) 'S' (abajo)</p>
-            <p id="player2ControlsInfo">J2: Flecha Arriba/Abajo</p>
+            <p id="player2ControlsInfo">J2: 'O' (arriba) 'L' (abajo)</p> {/* Actualizado por defecto, se ajustará en JS */}
         </div>
         <button id="resetButton">Reiniciar Juego</button>
 
@@ -201,14 +201,14 @@
         const paddleHeight = 100;
         const paddleWidth = 15;
         const playerPaddleSpeed = 9;
-        const aiPaddleSpeed = 7; // IA un poco más rápida
+        const aiPaddleSpeed = 7;
         const basePuckSpeed = 7;
         const puckSpeedAfterPaddleHit = 12;
         const wallDampeningFactor = 0.75;
-        const maxPuckSpeed = 18; // Aumentado un poco para el power-up
-        const PADDLE_COLOR_P1 = '#e94560'; // Rojo
-        const PADDLE_COLOR_P2_PVP = '#50c878'; // Verde
-        const PADDLE_COLOR_AI = '#40E0D0'; // Turquesa
+        const maxPuckSpeed = 18;
+        const PADDLE_COLOR_P1 = '#e94560';
+        const PADDLE_COLOR_P2_PVP = '#50c878';
+        const PADDLE_COLOR_AI = '#40E0D0';
 
         // --- Variables del Juego ---
         let puckRadius = 10, puckX, puckY, puckSpeedX, puckSpeedY;
@@ -224,17 +224,17 @@
         // --- Configuración del Power-up ---
         let powerUp = {
             x: 0, y: 0, radius: 12,
-            speedX: 2.5, speedY: 2.5, // Velocidad del power-up
+            speedX: 2.5, speedY: 2.5,
             isActiveOnField: false,
-            color: '#FFD700', // Amarillo Oro
-            effectDuration: 10000, // 10 segundos
-            spawnInterval: 30000, // 30 segundos
+            color: '#FFD700',
+            effectDuration: 10000,
+            spawnInterval: 30000,
             lastSpawnTime: 0,
             effectActiveForPlayer1: false,
             effectEndTimeP1: 0,
             effectActiveForPlayer2: false,
             effectEndTimeP2: 0,
-            powerUpPaddleColor: '#FFEA00' // Amarillo brillante para la paleta con power-up
+            powerUpPaddleColor: '#FFEA00'
         };
 
         // --- Detección de Dispositivo Táctil ---
@@ -243,7 +243,7 @@
         }
 
         // --- Funciones de Dibujo ---
-        function drawGoalLines() { /* ... (sin cambios) ... */ 
+        function drawGoalLines() { 
             context.strokeStyle = 'rgba(200, 200, 200, 0.6)'; context.lineWidth = 4; context.beginPath();
             context.moveTo(paddleWidth, goalYStart); context.lineTo(0, goalYStart);
             context.moveTo(paddleWidth, goalYEnd); context.lineTo(0, goalYEnd);
@@ -265,7 +265,7 @@
             context.fill();
         }
 
-        function drawPuck(x, y, radius, color) { /* ... (sin cambios) ... */ 
+        function drawPuck(x, y, radius, color) { 
             context.fillStyle = color; context.beginPath(); context.arc(x, y, radius, 0, Math.PI * 2, false); context.fill();
         }
 
@@ -276,7 +276,7 @@
             let innerRadius = radius * innerRadiusFactor;
             for (let i = 0; i < 2 * points; i++) {
                 let currentRadius = (i % 2 === 0) ? radius : innerRadius;
-                let angle = (Math.PI / points) * i - (Math.PI / 2); // Comienza desde arriba
+                let angle = (Math.PI / points) * i - (Math.PI / 2);
                 let currentX = x + currentRadius * Math.cos(angle);
                 let currentY = y + currentRadius * Math.sin(angle);
                 if (i === 0) context.moveTo(currentX, currentY);
@@ -287,21 +287,19 @@
         }
 
         // --- Lógica del Power-up ---
-        function spawnPowerUp() {
+        function spawnPowerUp() { /* ... (sin cambios) ... */ 
             if (powerUp.isActiveOnField) return;
             powerUp.isActiveOnField = true;
             powerUp.x = canvas.width / 3 + Math.random() * (canvas.width / 3);
             powerUp.y = canvas.height / 3 + Math.random() * (canvas.height / 3);
             let angle = Math.random() * Math.PI * 2;
-            powerUp.speedX = 2.5 * Math.cos(angle); // Velocidad constante para el power-up
+            powerUp.speedX = 2.5 * Math.cos(angle); 
             powerUp.speedY = 2.5 * Math.sin(angle);
         }
-
-        function movePowerUp() {
+        function movePowerUp() { /* ... (sin cambios) ... */ 
             if (!powerUp.isActiveOnField) return;
             powerUp.x += powerUp.speedX;
             powerUp.y += powerUp.speedY;
-
             if (powerUp.y + powerUp.radius > canvas.height || powerUp.y - powerUp.radius < 0) {
                 powerUp.speedY *= -1;
                 powerUp.y = (powerUp.y + powerUp.radius > canvas.height) ? canvas.height - powerUp.radius : powerUp.radius;
@@ -311,64 +309,57 @@
                 powerUp.x = (powerUp.x + powerUp.radius > canvas.width) ? canvas.width - powerUp.radius : powerUp.radius;
             }
         }
-
-        function checkPowerUpCollection() {
+        function checkPowerUpCollection() { /* ... (sin cambios) ... */ 
             if (!powerUp.isActiveOnField) return;
-            // Colisión con Jugador 1
             if (powerUp.x + powerUp.radius > 0 && powerUp.x - powerUp.radius < paddleWidth &&
                 powerUp.y + powerUp.radius > player1Y && powerUp.y - powerUp.radius < player1Y + paddleHeight) {
                 activatePowerUpEffect(1);
             }
-            // Colisión con Jugador 2
             else if (powerUp.x - powerUp.radius < canvas.width && powerUp.x + powerUp.radius > canvas.width - paddleWidth &&
                 powerUp.y + powerUp.radius > player2Y && powerUp.y - powerUp.radius < player2Y + paddleHeight) {
                 activatePowerUpEffect(2);
             }
         }
-
-        function activatePowerUpEffect(player) {
-            powerUp.isActiveOnField = false; // El power-up es recogido
+        function activatePowerUpEffect(player) { /* ... (sin cambios) ... */ 
+            powerUp.isActiveOnField = false; 
             playSound(powerUpCollectedSound);
             const currentTime = Date.now();
             if (player === 1) {
                 powerUp.effectActiveForPlayer1 = true;
                 powerUp.effectEndTimeP1 = currentTime + powerUp.effectDuration;
-                // Asegurar que el otro jugador no tenga el efecto si ya lo tenía (opcional, o permitir ambos)
-                // powerUp.effectActiveForPlayer2 = false; 
             } else if (player === 2) {
                 powerUp.effectActiveForPlayer2 = true;
                 powerUp.effectEndTimeP2 = currentTime + powerUp.effectDuration;
-                // powerUp.effectActiveForPlayer1 = false;
             }
         }
-
-        function deactivatePowerUpEffect(player) {
+        function deactivatePowerUpEffect(player) { /* ... (sin cambios) ... */ 
             if (player === 1) powerUp.effectActiveForPlayer1 = false;
             else if (player === 2) powerUp.effectActiveForPlayer2 = false;
         }
-        
-        function resetPowerUpState() {
+        function resetPowerUpState() { /* ... (sin cambios) ... */ 
             powerUp.isActiveOnField = false;
             powerUp.effectActiveForPlayer1 = false;
             powerUp.effectActiveForPlayer2 = false;
             powerUp.effectEndTimeP1 = 0;
             powerUp.effectEndTimeP2 = 0;
-            powerUp.lastSpawnTime = Date.now(); // Reinicia el temporizador de aparición
+            powerUp.lastSpawnTime = Date.now();
         }
-
 
         // --- Lógica del Juego (Movimiento, Colisiones, Puntuación) ---
-        function movePlayer1Paddle() { /* ... (sin cambios) ... */ 
-            if (keysPressed['w'] || keysPressed['W']) player1Y -= playerPaddleSpeed;
-            if (keysPressed['s'] || keysPressed['S']) player1Y += playerPaddleSpeed;
+        function movePlayer1Paddle() { 
+            if (keysPressed['w']) player1Y -= playerPaddleSpeed; // 'W' ya es lowercase
+            if (keysPressed['s']) player1Y += playerPaddleSpeed; // 'S' ya es lowercase
             player1Y = Math.max(0, Math.min(player1Y, canvas.height - paddleHeight));
         }
-        function movePlayer2Paddle() { /* ... (sin cambios) ... */ 
-            if (keysPressed['ArrowUp']) player2Y -= playerPaddleSpeed;
-            if (keysPressed['ArrowDown']) player2Y += playerPaddleSpeed;
+
+        function movePlayer2Paddle() { 
+            // Controles para Jugador 2: 'O' para arriba, 'L' para abajo
+            if (keysPressed['o']) player2Y -= playerPaddleSpeed;
+            if (keysPressed['l']) player2Y += playerPaddleSpeed;
             player2Y = Math.max(0, Math.min(player2Y, canvas.height - paddleHeight));
         }
-        function moveAIPaddle() { /* ... (sin cambios en la lógica base, solo velocidad ajustada si es necesario) ... */
+
+        function moveAIPaddle() { 
             if (puckSpeedX > 0 && puckX > canvas.width / 3.5) {
                 let targetY = puckY - (paddleHeight / 2);
                 const reactionSpeedFactor = 0.1 + Math.random() * 0.05; 
@@ -386,13 +377,14 @@
             }
             player2Y = Math.max(0, Math.min(player2Y, canvas.height - paddleHeight));
         }
-        function movePaddles() { /* ... (sin cambios) ... */ 
+
+        function movePaddles() { 
             movePlayer1Paddle();
             if (gameMode === 'pvp') movePlayer2Paddle();
             else if (gameMode === 'pvc') moveAIPaddle();
         }
 
-        function movePuck() {
+        function movePuck() { /* ... (sin cambios en la lógica de rebote, solo velocidad con power-up) ... */ 
             puckX += puckSpeedX;
             puckY += puckSpeedY;
 
@@ -402,7 +394,6 @@
                 playSound(hitWallSound);
             }
 
-            // Colisión con Jugador 1
             if (puckSpeedX < 0 && puckX - puckRadius < paddleWidth && puckX - puckRadius > 0 &&
                 puckY + puckRadius > player1Y && puckY - puckRadius < player1Y + paddleHeight) {
                 puckX = paddleWidth + puckRadius;
@@ -410,16 +401,13 @@
                 relativeImpactY = Math.max(-1, Math.min(1, relativeImpactY));
                 let maxBounceAngle = Math.PI / 3.5; 
                 let bounceAngle = relativeImpactY * maxBounceAngle;
-                
                 let currentSpeed = puckSpeedAfterPaddleHit;
-                if (powerUp.effectActiveForPlayer1) currentSpeed *= 1.5; // Efecto Power-up
-
+                if (powerUp.effectActiveForPlayer1) currentSpeed *= 1.5;
                 puckSpeedX = currentSpeed * Math.cos(bounceAngle);
                 puckSpeedY = currentSpeed * Math.sin(bounceAngle);
                 playSound(hitPaddleSound);
             }
 
-            // Colisión con Jugador 2
             if (puckSpeedX > 0 && puckX + puckRadius > canvas.width - paddleWidth && puckX + puckRadius < canvas.width &&
                 puckY + puckRadius > player2Y && puckY - puckRadius < player2Y + paddleHeight) {
                 puckX = canvas.width - paddleWidth - puckRadius;
@@ -427,27 +415,22 @@
                 relativeImpactY = Math.max(-1, Math.min(1, relativeImpactY));
                 let maxBounceAngle = Math.PI / 3.5;
                 let bounceAngle = relativeImpactY * maxBounceAngle;
-
                 let currentSpeed = puckSpeedAfterPaddleHit;
-                if (powerUp.effectActiveForPlayer2) currentSpeed *= 1.5; // Efecto Power-up
-
+                if (powerUp.effectActiveForPlayer2) currentSpeed *= 1.5;
                 puckSpeedX = -currentSpeed * Math.cos(bounceAngle);
                 puckSpeedY = currentSpeed * Math.sin(bounceAngle);
                 playSound(hitPaddleSound);
             }
             
-            // Limitar velocidad máxima del disco (componentes)
-            const currentMaxSpeed = Math.max(maxPuckSpeed, puckSpeedAfterPaddleHit * 1.5); // Considerar velocidad con power-up
+            const currentMaxSpeed = Math.max(maxPuckSpeed, puckSpeedAfterPaddleHit * 1.5);
             puckSpeedX = Math.max(-currentMaxSpeed, Math.min(currentMaxSpeed, puckSpeedX));
             puckSpeedY = Math.max(-currentMaxSpeed, Math.min(currentMaxSpeed, puckSpeedY));
 
-
-            // Puntos y colisión con paredes laterales
-            if (puckX - puckRadius < 0) { /* ... (sin cambios) ... */ 
+            if (puckX - puckRadius < 0) { 
                 if (puckY > goalYStart && puckY < goalYEnd) { player2Score++; playSound(scoreSound); resetPuck(); checkWin(); } 
                 else { puckX = puckRadius; puckSpeedX *= -wallDampeningFactor; puckSpeedY *= wallDampeningFactor; playSound(hitWallSound); }
             }
-            if (puckX + puckRadius > canvas.width) { /* ... (sin cambios) ... */ 
+            if (puckX + puckRadius > canvas.width) { 
                 if (puckY > goalYStart && puckY < goalYEnd) { player1Score++; playSound(scoreSound); resetPuck(); checkWin(); } 
                 else { puckX = canvas.width - puckRadius; puckSpeedX *= -wallDampeningFactor; puckSpeedY *= wallDampeningFactor; playSound(hitWallSound); }
             }
@@ -474,16 +457,16 @@
         }
         
         // --- Gestión del Estado del Juego (Modos, Reinicio) ---
-        function showGameModeSelection() { /* ... (sin cambios, pero se llama resetPowerUpState) ... */ 
+        function showGameModeSelection() { /* ... (sin cambios) ... */ 
             gameModeSelectionScreen.style.display = 'block';
             gameElements.forEach(el => el.style.display = 'none');
             touchControlsContainer.style.display = 'none';
             if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
             isGameRunning = false;
-            resetPowerUpState(); // Asegurar que los power-ups se reinicien al volver a selección de modo
+            resetPowerUpState();
         }
 
-        function startGameMode(selectedMode) { /* ... (sin cambios, pero se llama resetPowerUpState) ... */ 
+        function startGameMode(selectedMode) { 
             gameMode = selectedMode;
             gameModeSelectionScreen.style.display = 'none';
             gameElements.forEach(el => el.style.display = el.id === 'messageBox' ? 'none' : 'flex');
@@ -491,14 +474,23 @@
             scoreBoard.style.display = 'block'; canvas.style.display = 'block';
             document.querySelector('.controls-info').style.display = 'block'; resetButton.style.display = 'block';
 
-            if (gameMode === 'pvc') { player2ControlsInfo.textContent = "J2: Computadora"; if (isTouchDevice) touchControlsP2.style.display = 'none'; } 
-            else { player2ControlsInfo.textContent = "J2: Flecha Arriba/Abajo"; if (isTouchDevice) touchControlsP2.style.display = 'flex';}
-            if (isTouchDevice) { touchControlsContainer.style.display = 'flex'; touchControlsP1.style.display = 'flex'; } 
-            else { touchControlsContainer.style.display = 'none'; }
+            if (gameMode === 'pvc') { 
+                player2ControlsInfo.textContent = "J2: Computadora"; 
+                if (isTouchDevice) touchControlsP2.style.display = 'none'; 
+            } else { // pvp mode
+                player2ControlsInfo.textContent = "J2: 'O' (arriba) 'L' (abajo)"; // Actualizar texto de controles
+                if (isTouchDevice) touchControlsP2.style.display = 'flex';
+            }
+            if (isTouchDevice) { 
+                touchControlsContainer.style.display = 'flex'; 
+                touchControlsP1.style.display = 'flex'; 
+            } else { 
+                touchControlsContainer.style.display = 'none'; 
+            }
 
             resetGameVariables();
             initializeGameVisuals();
-            resetPowerUpState(); // Iniciar el ciclo de aparición de power-ups
+            resetPowerUpState();
             isGameRunning = true;
             if (!animationFrameId) gameLoop();
         }
@@ -512,10 +504,10 @@
             puckRadius = Math.max(8, Math.min(15, canvas.height * 0.025));
             resetPuck();
         }
-        function fullGameReset() { /* ... (sin cambios, pero se llama resetPowerUpState) ... */ 
+        function fullGameReset() { /* ... (sin cambios) ... */ 
             resetGameVariables();
             initializeGameVisuals();
-            resetPowerUpState(); // Reiniciar estado y temporizador de power-ups
+            resetPowerUpState();
             isGameRunning = true;
             if (!animationFrameId && gameMode !== 'not_selected') gameLoop();
             else if (gameMode === 'not_selected') showGameModeSelection();
@@ -523,22 +515,22 @@
 
         // --- Sonidos ---
         let hitPaddleSound, hitWallSound, scoreSound, powerUpCollectedSound;
-        function setupSounds() { 
+        function setupSounds() { /* ... (sin cambios) ... */ 
             if (typeof Tone !== 'undefined') {
                 hitPaddleSound = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination();
                 hitWallSound = new Tone.Synth({ oscillator: { type: "triangle" }, envelope: { attack: 0.005, decay: 0.05, sustain: 0, release: 0.1 } }).toDestination();
                 scoreSound = new Tone.PluckSynth({ attackNoise: 1, dampening: 4000, resonance: 0.7}).toDestination();
-                powerUpCollectedSound = new Tone.Synth({ // Sonido para el power-up
-                    oscillator: { type: "pulse", width: 0.4 }, // Sonido más "electrónico" o "divertido"
+                powerUpCollectedSound = new Tone.Synth({ 
+                    oscillator: { type: "pulse", width: 0.4 }, 
                     envelope: { attack: 0.01, decay: 0.3, sustain: 0.05, release: 0.2 },
-                    volume: -3 // Puede ser un poco más fuerte para destacar
+                    volume: -3 
                 }).toDestination();
             } else { console.warn("Tone.js no está cargado."); }
         }
-        function playSound(sound) { 
+        function playSound(sound) { /* ... (sin cambios) ... */ 
              if (sound && typeof Tone !== 'undefined' && Tone.context.state !== 'suspended') {
                 if (sound === scoreSound) sound.triggerAttack("C4");
-                else if (sound === powerUpCollectedSound) sound.triggerAttackRelease("G5", "8n"); // Nota más alta para power-up
+                else if (sound === powerUpCollectedSound) sound.triggerAttackRelease("G5", "8n");
                 else sound.triggerAttackRelease(sound.oscillator.type === "sine" ? "C5" : "A3", "8n");
             } else if (sound && typeof Tone !== 'undefined' && Tone.context.state === 'suspended') {
                 Tone.start().then(() => {
@@ -550,41 +542,24 @@
         }
 
         // --- Bucle Principal del Juego ---
-        function gameLoop() {
+        function gameLoop() { /* ... (sin cambios) ... */ 
             if (!isGameRunning) { animationFrameId = null; return; }
-            
             const currentTime = Date.now();
-
-            // Gestión de Power-ups
             if (!powerUp.isActiveOnField && (currentTime - powerUp.lastSpawnTime > powerUp.spawnInterval)) {
                 spawnPowerUp();
                 powerUp.lastSpawnTime = currentTime;
             }
-            if (powerUp.effectActiveForPlayer1 && currentTime > powerUp.effectEndTimeP1) {
-                deactivatePowerUpEffect(1);
-            }
-            if (powerUp.effectActiveForPlayer2 && currentTime > powerUp.effectEndTimeP2) {
-                deactivatePowerUpEffect(2);
-            }
-
-            // Limpiar y dibujar
+            if (powerUp.effectActiveForPlayer1 && currentTime > powerUp.effectEndTimeP1) deactivatePowerUpEffect(1);
+            if (powerUp.effectActiveForPlayer2 && currentTime > powerUp.effectEndTimeP2) deactivatePowerUpEffect(2);
             context.fillStyle = '#0f3460'; context.fillRect(0, 0, canvas.width, canvas.height);
-            
             movePaddles(); 
             movePuck();
-            if (powerUp.isActiveOnField) {
-                movePowerUp();
-                checkPowerUpCollection();
-            }
-
+            if (powerUp.isActiveOnField) { movePowerUp(); checkPowerUpCollection(); }
             drawGoalLines();
             drawPaddle(0, player1Y, paddleWidth, paddleHeight, PADDLE_COLOR_P1, 1);
             drawPaddle(canvas.width - paddleWidth, player2Y, paddleWidth, paddleHeight, (gameMode === 'pvc' ? PADDLE_COLOR_AI : PADDLE_COLOR_P2_PVP), 2);
             drawPuck(puckX, puckY, puckRadius, '#f9f871');
-            if (powerUp.isActiveOnField) {
-                drawStar(powerUp.x, powerUp.y, powerUp.radius, powerUp.color);
-            }
-            
+            if (powerUp.isActiveOnField) drawStar(powerUp.x, powerUp.y, powerUp.radius, powerUp.color);
             animationFrameId = requestAnimationFrame(gameLoop);
         }
 
@@ -607,20 +582,28 @@
         resetButton.addEventListener('click', fullGameReset);
         playAgainButton.addEventListener('click', fullGameReset);
         changeModeButton.addEventListener('click', showGameModeSelection);
-        window.addEventListener('keydown', (event) => { /* ... (sin cambios) ... */ 
-            keysPressed[event.key.toLowerCase()] = true; 
+
+        window.addEventListener('keydown', (event) => { 
+            keysPressed[event.key.toLowerCase()] = true; // Guardar teclas en minúscula
             if (typeof Tone !== 'undefined' && Tone.context.state === 'suspended') Tone.start();
         });
-        window.addEventListener('keyup', (event) => { keysPressed[event.key.toLowerCase()] = false; });
-        function addTouchListener(button, key) { /* ... (sin cambios) ... */ 
-            button.addEventListener('touchstart', (e) => { e.preventDefault(); keysPressed[key] = true; if (typeof Tone !== 'undefined' && Tone.context.state === 'suspended') Tone.start(); }, { passive: false });
-            button.addEventListener('touchend', (e) => { e.preventDefault(); keysPressed[key] = false; }, { passive: false });
-            button.addEventListener('touchcancel', (e) => { e.preventDefault(); keysPressed[key] = false; }, { passive: false });
+        window.addEventListener('keyup', (event) => { 
+            keysPressed[event.key.toLowerCase()] = false; 
+        });
+        
+        function addTouchListener(button, key) { 
+            button.addEventListener('touchstart', (e) => { e.preventDefault(); keysPressed[key.toLowerCase()] = true; if (typeof Tone !== 'undefined' && Tone.context.state === 'suspended') Tone.start(); }, { passive: false });
+            button.addEventListener('touchend', (e) => { e.preventDefault(); keysPressed[key.toLowerCase()] = false; }, { passive: false });
+            button.addEventListener('touchcancel', (e) => { e.preventDefault(); keysPressed[key.toLowerCase()] = false; }, { passive: false });
         }
-        addTouchListener(p1UpButton, 'w'); addTouchListener(p1DownButton, 's');
-        addTouchListener(p2UpButton, 'arrowup'); addTouchListener(p2DownButton, 'arrowdown');
 
-        window.addEventListener('resize', () => { /* ... (sin cambios en la lógica de reinicio, solo ajuste de controles táctiles) ... */ 
+        // Asignar teclas a los botones táctiles (ahora 'o' y 'l' para J2)
+        addTouchListener(p1UpButton, 'w'); 
+        addTouchListener(p1DownButton, 's');
+        addTouchListener(p2UpButton, 'o'); // Cambiado de 'arrowup'
+        addTouchListener(p2DownButton, 'l'); // Cambiado de 'arrowdown'
+
+        window.addEventListener('resize', () => { 
             if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
             setupCanvasDimensions();
             if (isGameRunning && gameMode !== 'not_selected') { gameLoop(); } 
@@ -635,7 +618,7 @@
         window.onload = function() {
             detectTouchDevice();
             setupCanvasDimensions();
-            if (!hitPaddleSound) setupSounds(); // Asegurar que los sonidos (incluido el nuevo) se configuren
+            if (!hitPaddleSound) setupSounds();
             showGameModeSelection();
         };
     </script>
